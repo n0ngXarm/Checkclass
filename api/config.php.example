@@ -1,0 +1,32 @@
+<?php
+// เริ่ม session (ต้องอยู่บนสุด)
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Aiven MySQL Configuration (Replace with your actual URI)
+$uri = "mysql://user:pass@host:port/dbname?ssl-mode=REQUIRED";
+
+$fields = parse_url($uri);
+
+try {
+    // PDO with SSL but without CA cert (ใช้ได้กับ Aiven)
+    $dsn = "mysql:host=" . $fields["host"] . ";port=" . $fields["port"] . ";dbname=defaultdb";
+    
+    $options = [
+        PDO::MYSQL_ATTR_SSL_CA => NULL,
+        PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
+    ];
+    
+    $db = new PDO($dsn, $fields["user"], $fields["pass"], $options);
+    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $db->exec("set names utf8");
+    
+    $conn = $db;
+    
+} catch (Exception $e) {
+    die("เชื่อมต่อฐานข้อมูลล้มเหลว: " . $e->getMessage());
+}
+
+date_default_timezone_set('Asia/Bangkok');
+?>
