@@ -5,7 +5,7 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: true, // ต้องเป็น true
+  withCredentials: true,
 });
 
 // เพิ่ม token ในทุก request
@@ -18,15 +18,6 @@ api.interceptors.request.use(
     return config;
   },
   (error) => Promise.reject(error)
-);
-
-// จัดการ response error
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    console.error('API Error:', error.response?.data || error.message);
-    return Promise.reject(error);
-  }
 );
 
 export default api;

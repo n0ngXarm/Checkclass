@@ -1,87 +1,75 @@
 <?php
 require_once 'config.php';
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode(['error' => 'Method not allowed']);
-    exit;
-}
-
+// รับ JSON จาก request
 $input = json_decode(file_get_contents('php://input'), true);
 
 if (!isset($input['username']) || !isset($input['password'])) {
     http_response_code(400);
-    echo json_encode(['error' => 'กรุณากรอกชื่อผู้ใช้และรหัสผ่าน']);
-    exit;
+    echo json_encode(['success' => false, 'error' => 'กรุณากรอกชื่อผู้ใช้และรหัสผ่าน']);
+    exit();
 }
 
 $username = $input['username'];
 $password = $input['password'];
 
 try {
+    // ค้นหาผู้ใช้
     $stmt = $conn->prepare("
-        SELECT u.*, 
-               p.first_name, p.last_name, p.title, p.phone, p.avatar,
-               r.role_name, r.permissions,
-               t.teacher_id, t.teacher_code, t.dept_id,
-               s.student_id, s.student_code, s.level, s.major_code, s.enrollment_year
+        SELECT u.*, t.teacher_id, t.teacher_code, t.title as teacher_title, 
+               t.first_name as teacher_firstname, t.last_name as teacher_lastname,
+               s.student_id, s.student_code, s.title as student_title,
+               s.first_name as student_firstname, s.last_name as student_lastname,
+               s.class
         FROM users u
-        LEFT JOIN profiles p ON u.user_id = p.user_id
-        LEFT JOIN roles r ON u.role_id = r.role_id
-        LEFT JOIN teacher t ON u.user_id = t.user_id
-        LEFT JOIN student s ON u.user_id = s.user_id
-        WHERE u.username = ? AND u.is_active = 1
+        LEFT JOIN teachers t ON u.user_id = t.user_id
+        LEFT JOIN students s ON u.user_id = s.user_id
+        WHERE u.username = ? AND u.password = ?
     ");
-    $stmt->execute([$username]);
+    $stmt->execute([$username, $password]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$user) {
-        http_response_code(401);
-        echo json_encode(['error' => 'ไม่พบบัญชีผู้ใช้นี้']);
-        exit;
+        echo json_encode(['success' => false, 'error' => 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง']);
+        exit();
     }
 
-    // ตรวจสอบรหัสผ่าน
-    if ($password !== $user['password']) {
-        http_response_code(401);
-        echo json_encode(['error' => 'รหัสผ่านไม่ถูกต้อง']);
-        exit;
-    }
-
-    // ตรวจสอบการอนุมัติ (ยกเว้น admin)
-    if ($user['role_id'] != 1 && !$user['is_approved']) {
-        http_response_code(403);
-        echo json_encode(['error' => 'บัญชีนี้รอการอนุมัติจากผู้อำนวยการ']);
-        exit;
-    }
-
+    // เริ่ม session
     session_start();
     $_SESSION['user_id'] = $user['user_id'];
     $_SESSION['username'] = $user['username'];
-    $_SESSION['role_id'] = $user['role_id'];
-    $_SESSION['role_name'] = $user['role_name'];
-    
-    $session_id = session_id();
+    $_SESSION['role'] = $user['role'];
 
-    // กำหนด redirect path ตาม role
-    $redirectPath = match($user['role_id']) {
-        1 => '/dashboard',      // ผอ.
-        2 => '/teacher/dashboard', // ครู
-        3 => '/student/dashboard', // นักเรียน
-        default => '/dashboard'
-    };
+    // สร้างข้อมูล user ที่จะส่งกลับ
+    $userData = [
+        'id' => $user['user_id'],
+        'username' => $user['username'],
+        'role' => $user['role']
+    ];
 
-    unset($user['password']);
+    // เพิ่มข้อมูลเฉพาะตาม role
+    if ($user['role'] === 'teacher') {
+        $userData['teacher_id'] = $user['teacher_id'];
+        $userData['teacher_code'] = $user['teacher_code'];
+        $userData['title'] = $user['teacher_title'];
+        $userData['first_name'] = $user['teacher_firstname'];
+        $userData['last_name'] = $user['teacher_lastname'];
+    } elseif ($user['role'] === 'student') {
+        $userData['student_id'] = $user['student_id'];
+        $userData['student_code'] = $user['student_code'];
+        $userData['title'] = $user['student_title'];
+        $userData['first_name'] = $user['student_firstname'];
+        $userData['last_name'] = $user['student_lastname'];
+        $userData['class'] = $user['class'];
+    }
 
     echo json_encode([
         'success' => true,
-        'token' => $session_id,
-        'user' => $user,
-        'redirect' => $redirectPath
+        'user' => $userData
     ]);
 
-} catch (Exception $e) {
+} catch (PDOException $e) {
     http_response_code(500);
-    echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
+    echo json_encode(['success' => false, 'error' => 'Database error: ' . $e->getMessage()]);
 }
 ?>

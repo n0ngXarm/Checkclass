@@ -11,12 +11,17 @@ export const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const storedUser = localStorage.getItem('user');
-    if (token && storedUser) {
-      setUser(JSON.parse(storedUser));
+    try {
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      }
+    } catch (err) {
+      console.error('Error parsing stored user:', err);
+      localStorage.removeItem('user');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
   const login = async (username, password) => {
@@ -26,22 +31,16 @@ export const AuthProvider = ({ children }) => {
       
       const response = await api.post('/login.php', { username, password });
       
-      console.log('Login response:', response.data);
-      
       if (response.data.success) {
-        localStorage.setItem('token', response.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.user));
         setUser(response.data.user);
-        return { 
-          success: true, 
-          redirect: response.data.redirect 
-        };
+        return { success: true };
       } else {
         setError(response.data.error || 'Login failed');
         return { success: false, error: response.data.error };
       }
     } catch (err) {
-      console.error('Login error:', err.response?.data || err);
+      console.error('Login error:', err);
       const errorMsg = err.response?.data?.error || err.message || 'Network error';
       setError(errorMsg);
       return { success: false, error: errorMsg };
@@ -51,7 +50,6 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
     localStorage.removeItem('user');
     setUser(null);
     api.post('/logout.php').catch(() => {});
@@ -64,9 +62,9 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
     isAuthenticated: !!user,
-    isAdmin: user?.role_id === 1,
-    isTeacher: user?.role_id === 2,
-    isStudent: user?.role_id === 3,
+    isTeacher: user?.role === 'teacher',
+    isStudent: user?.role === 'student',
+    isAdmin: user?.role === 'admin',
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

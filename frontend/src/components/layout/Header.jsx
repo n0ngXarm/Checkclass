@@ -3,25 +3,16 @@ import {
   AppBar,
   Toolbar,
   Typography,
-  IconButton,
   Box,
+  Button,
   Avatar,
   Menu,
   MenuItem,
-  Tooltip,
 } from '@mui/material';
-import {
-  Menu as MenuIcon,
-  AccountCircle,
-  Notifications as NotificationsIcon,
-  Logout as LogoutIcon, // << เพิ่มตรงนี้
-} from '@mui/icons-material';
 import { useAuth } from '../../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
 
-const Header = ({ onMenuClick }) => {
+const Header = () => {
   const { user, logout } = useAuth();
-  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleMenu = (event) => {
@@ -32,99 +23,51 @@ const Header = ({ onMenuClick }) => {
     setAnchorEl(null);
   };
 
-  const handleProfile = () => {
-    handleClose();
-    navigate('/profile');
-  };
-
   const handleLogout = () => {
     handleClose();
     logout();
-    navigate('/login');
+    window.location.href = '/login';
   };
 
-  // สร้างตัวย่อชื่อ
   const getInitials = () => {
     if (!user) return '?';
-    const first = user.first_name?.charAt(0) || '';
-    const last = user.last_name?.charAt(0) || '';
-    return (first + last).toUpperCase();
+    return (user.first_name?.charAt(0) || '') + (user.last_name?.charAt(0) || '');
+  };
+
+  const getUserTitle = () => {
+    if (user?.role === 'teacher') return '👩‍🏫 ครู';
+    if (user?.role === 'student') return '🧑 นักเรียน';
+    if (user?.role === 'admin') return '👑 ผู้ดูแล';
+    return '';
   };
 
   return (
-    <AppBar 
-      position="fixed" 
-      sx={{ 
-        zIndex: (theme) => theme.zIndex.drawer + 1,
-        bgcolor: 'white',
-        color: '#1e293b',
-        boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1)',
-      }}
-    >
+    <AppBar position="static">
       <Toolbar>
-        <IconButton
-          color="inherit"
-          aria-label="open drawer"
-          edge="start"
-          onClick={onMenuClick}
-          sx={{ mr: 2, display: { sm: 'none' } }}
-        >
-          <MenuIcon />
-        </IconButton>
-
-        <Typography variant="h6" noWrap sx={{ flexGrow: 1, fontWeight: 600 }}>
-          ระบบเช็คชื่อนักเรียน
+        <Typography variant="h6" sx={{ flexGrow: 1 }}>
+          ระบบเช็คชื่อออนไลน์
         </Typography>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          {/* Notifications */}
-          <Tooltip title="การแจ้งเตือน">
-            <IconButton color="inherit" size="large">
-              <NotificationsIcon />
-            </IconButton>
-          </Tooltip>
-
-          {/* User Menu */}
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Tooltip title="บัญชีผู้ใช้">
-              <IconButton
-                onClick={handleMenu}
-                size="small"
-                sx={{ ml: 2 }}
-              >
-                <Avatar sx={{ width: 40, height: 40, bgcolor: '#2563eb' }}>
-                  {getInitials()}
-                </Avatar>
-              </IconButton>
-            </Tooltip>
-            <Box sx={{ ml: 1, display: { xs: 'none', md: 'block' } }}>
-              <Typography variant="subtitle2" sx={{ lineHeight: 1.2 }}>
-                {user?.title}{user?.first_name} {user?.last_name}
-              </Typography>
-              <Typography variant="caption" color="textSecondary">
-                {user?.role_id === 1 ? 'ผู้อำนวยการ' : 
-                 user?.role_id === 2 ? 'ครู' : 'นักเรียน'}
-              </Typography>
-            </Box>
+        {user && (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Typography variant="body2">
+              {user.title}{user.first_name} {user.last_name}
+            </Typography>
+            <Typography variant="caption" sx={{ opacity: 0.8 }}>
+              {getUserTitle()}
+            </Typography>
+            <Avatar onClick={handleMenu} sx={{ cursor: 'pointer', bgcolor: '#1976d2' }}>
+              {getInitials()}
+            </Avatar>
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
+            >
+              <MenuItem onClick={handleLogout}>ออกจากระบบ</MenuItem>
+            </Menu>
           </Box>
-
-          <Menu
-            id="menu-appbar"
-            anchorEl={anchorEl}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-            keepMounted
-            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-            open={Boolean(anchorEl)}
-            onClose={handleClose}
-          >
-            <MenuItem onClick={handleProfile}>
-              <AccountCircle sx={{ mr: 1 }} /> โปรไฟล์
-            </MenuItem>
-            <MenuItem onClick={handleLogout}>
-              <LogoutIcon sx={{ mr: 1 }} /> ออกจากระบบ
-            </MenuItem>
-          </Menu>
-        </Box>
+        )}
       </Toolbar>
     </AppBar>
   );
