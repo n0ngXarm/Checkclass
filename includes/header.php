@@ -9,7 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="/attendance_system/assets/css/style.css" rel="stylesheet">
+    <link href="/assets/css/style.css?v=2" rel="stylesheet">
 </head>
 <body>
     <?php if(isset($_SESSION['teacher_id'])): ?>
