@@ -4,6 +4,7 @@ body {
     font-family: 'Prompt', sans-serif;
     background-color: #f4f6f9;
     color: #333;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Navbar Glassmorphism */
@@ -13,6 +14,7 @@ body {
     -webkit-backdrop-filter: blur(10px);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: background-color 0.3s ease;
 }
 
 .navbar-glass .navbar-brand {
@@ -52,6 +54,7 @@ body {
     border: none;
     border-radius: 16px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .attendance-table th {
@@ -60,6 +63,7 @@ body {
     color: #555;
     border-bottom: 2px solid #eef2f7;
     padding: 15px 10px;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .student-row td {
@@ -120,6 +124,7 @@ body {
     border-top: 1px solid #eef2f7;
     color: #6c757d;
     font-size: 0.9rem;
+    transition: background-color 0.3s ease;
 }
 
 /* Utils */
@@ -133,6 +138,8 @@ body {
     display: inline-block;
     border-radius: 8px;
     border: 1px solid #ced4da;
+    background: transparent;
+    color: inherit;
 }
 .time-input:focus {
     border-color: #86b7fe;
@@ -155,4 +162,56 @@ body {
 }
 .spinner-overlay.show {
     display: flex;
+}
+
+/* ================= DARK MODE OVERRIDES ================= */
+[data-bs-theme="dark"] body {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+[data-bs-theme="dark"] .stats-card,
+[data-bs-theme="dark"] .card {
+    background-color: #1e1e1e;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    border: 1px solid #2d2d2d;
+}
+[data-bs-theme="dark"] .navbar-glass {
+    background: rgba(18, 18, 18, 0.95) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+[data-bs-theme="dark"] .attendance-table th {
+    background-color: #2c2c2c;
+    color: #f8f9fa;
+    border-bottom-color: #444;
+}
+[data-bs-theme="dark"] .student-row {
+    border-bottom-color: #333;
+}
+[data-bs-theme="dark"] .student-row:hover {
+    background-color: #2a2a2a;
+}
+[data-bs-theme="dark"] .footer {
+    background-color: #1e1e1e;
+    border-top-color: #333;
+}
+[data-bs-theme="dark"] .table-light {
+    background-color: #2c2c2c !important;
+    color: #fff !important;
+}
+
+/* ================= MOBILE UI (Responsiveness) ================= */
+@media (max-width: 768px) {
+    .stats-card .card-body {
+        padding: 15px 10px;
+    }
+    .stats-card h2 {
+        font-size: 1.5rem;
+    }
+    .stats-card .rounded-circle {
+        width: 38px !important;
+        height: 38px !important;
+    }
+    .stats-card .rounded-circle fs-4 {
+        font-size: 1.25rem !important;
+    }
 }

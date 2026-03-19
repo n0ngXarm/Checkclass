@@ -14,11 +14,26 @@
     </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
-<script src="/attendance_system/assets/js/script.js"></script>
+<script src="/assets/js/script.js?v=2"></script>
+<script>
+const toggleBtn = document.getElementById('themeToggleBtn');
+if (toggleBtn) {
+    const currentTheme = document.documentElement.getAttribute('data-bs-theme');
+    const themeIcon = document.getElementById('themeIcon');
+    if(currentTheme === 'dark') themeIcon.className = 'bi bi-sun-fill text-warning';
+    
+    toggleBtn.addEventListener('click', () => {
+        let theme = document.documentElement.getAttribute('data-bs-theme') === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-bs-theme', theme);
+        localStorage.setItem('theme', theme);
+        themeIcon.className = theme === 'light' ? 'bi bi-moon-fill' : 'bi bi-sun-fill text-warning';
+    });
+}
+</script>
 <?php if(isset($extra_js)) echo $extra_js; ?>
 </body>
 </html>
