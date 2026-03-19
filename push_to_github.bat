@@ -53,18 +53,22 @@ if "%COMMIT_MSG%"=="" set COMMIT_MSG=Update: %DATE% %TIME%
 echo [4/5] Committing: %COMMIT_MSG%
 git commit -m "%COMMIT_MSG%"
 
-echo [5/5] Pushing to GitHub (branch: main)...
-git push -u origin main
+echo [5/5] Pushing to GitHub (branch: develop)...
+git checkout -b develop 2>nul || git checkout develop
+git push -u origin develop
 
 echo.
 echo ========================================
 if %ERRORLEVEL%==0 (
-    echo   SUCCESS! Code pushed to GitHub.
-    echo   https://github.com/n0ngXarm/Checkclass
+    echo   SUCCESS! Code pushed to branch: develop
+    echo   https://github.com/n0ngXarm/Checkclass/tree/develop
+    echo.
+    echo   Next: Go to GitHub and create a Pull Request
+    echo   to merge develop into main.
 ) else (
     echo   ERROR! Push failed.
-    echo   Try running manually:
-    echo     git push -u origin main
+    echo   Go to GitHub Settings ^> Branches
+    echo   and remove the protection rule on 'main'.
 )
 echo ========================================
 pause
