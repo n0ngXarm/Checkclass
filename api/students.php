@@ -9,10 +9,13 @@ $db   = new Database();
 $conn = $db->getConnection();
 
 // Detect PK column name
-$pk = 'id';
+// Primary key is student_id as per schema
+$pk = 'student_id';
 try {
     $pkInfo = $conn->query("SHOW KEYS FROM students WHERE Key_name='PRIMARY'")->fetchAll();
     if(!empty($pkInfo)) $pk = $pkInfo[0]['Column_name'];
+    // Fallback if SHOW KEYS fails
+    if(!$pk) $pk = 'student_id';
 } catch(Exception $e){}
 
 $method = $_SERVER['REQUEST_METHOD'];
@@ -22,7 +25,7 @@ if($method === 'GET') {
     $class_id = (int)($_GET['class_id'] ?? 0);
     $search   = trim($_GET['search'] ?? '');
 
-    $sql    = "SELECT s.`$pk` AS id, s.student_id, s.student_number,
+    $sql    = "SELECT s.`$pk` AS id, s.student_id, s.student_code, s.student_number,
                       s.first_name_th, s.last_name_th, s.gender,
                       c.class_id, c.class_code, c.room, d.dept_name_th
                FROM students s
@@ -57,12 +60,12 @@ if($method === 'POST') {
     if(!$student_id || !$first_name_th || !$last_name_th || !$class_id)
         jsonError('ข้อมูลไม่ครบ: student_id, first_name_th, last_name_th, class_id จำเป็นต้องมี');
 
-    $chk = $conn->prepare("SELECT COUNT(*) FROM students WHERE student_id = ?");
+    $chk = $conn->prepare("SELECT COUNT(*) FROM students WHERE student_code = ?");
     $chk->execute([$student_id]);
     if($chk->fetchColumn()) jsonError('รหัสนักเรียนนี้มีอยู่แล้ว', 409);
 
     $conn->prepare(
-        "INSERT INTO students (student_id, first_name_th, last_name_th, class_id, student_number, gender)
+        "INSERT INTO students (student_code, first_name_th, last_name_th, class_id, student_number, gender)
          VALUES (?, ?, ?, ?, ?, ?)"
     )->execute([$student_id, $first_name_th, $last_name_th, $class_id, $student_number, $gender]);
 

@@ -20,9 +20,9 @@ $stu = $conn->prepare(
      FROM students s
      JOIN classes c ON s.class_id = c.class_id
      JOIN departments d ON c.dept_id = d.dept_id
-     WHERE s.student_id = ? LIMIT 1"
+     WHERE s.student_id = ? OR s.student_code = ? LIMIT 1"
 );
-$stu->execute([$student_id]);
+$stu->execute([$student_id, $student_id]);
 $student = $stu->fetch();
 if(!$student) jsonError('ไม่พบนักเรียน', 404);
 
@@ -30,8 +30,9 @@ if(!$student) jsonError('ไม่พบนักเรียน', 404);
 $ar_cols = [];
 try { $ar_cols = $conn->query("SHOW COLUMNS FROM attendance_records")->fetchAll(PDO::FETCH_COLUMN); } catch(Exception $e){}
 $extra = '';
+$noteCol = in_array('remark', $ar_cols) ? 'remark' : (in_array('note', $ar_cols) ? 'note' : '');
 if(in_array('check_in_time', $ar_cols)) $extra .= ', ar.check_in_time';
-if(in_array('note', $ar_cols))          $extra .= ', ar.note';
+if($noteCol !== '')                     $extra .= ", ar.$noteCol AS note";
 
 $hist = [];
 $counts = ['มาเรียน'=>0,'ขาดเรียน'=>0,'สาย'=>0,'ลา'=>0,'total'=>0];
@@ -46,7 +47,8 @@ try {
     $hist = $stmt->fetchAll();
     foreach($hist as $h) {
         $counts['total']++;
-        if(isset($counts[$h['status']])) $counts[$h['status']]++;
+        $st = $h['status'] === 'มาสาย' ? 'สาย' : $h['status'];
+        if(isset($counts[$st])) $counts[$st]++;
     }
 } catch(Exception $e) {}
 

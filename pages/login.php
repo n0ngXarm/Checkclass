@@ -26,8 +26,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->execute([':code' => $username]);
         $teacher = $stmt->fetch();
         
-        // ตรวจสอบรหัสผ่าน (เบื้องต้น ใช้รหัสผ่านเดียวกันก่อน)
-        if($teacher && $password == '1234') {
+        // Support both bcrypt and plain '1234' (for dev/legacy support)
+        $valid = $teacher && ($password === '1234' || password_verify($password, $teacher['password'] ?? ''));
+        
+        if($valid) {
             $_SESSION['teacher_id'] = $teacher['teacher_id'];
             $_SESSION['teacher_name'] = $teacher['first_name_th'] . ' ' . $teacher['last_name_th'];
             $_SESSION['teacher_code'] = $teacher['teacher_code'];

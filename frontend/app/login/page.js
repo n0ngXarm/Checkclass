@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { api } from '@/lib/api';
+import { api } from '../../lib/api';
 import { BookCheck, User, Lock, Eye, EyeOff } from 'lucide-react';
 
 export default function LoginPage() {

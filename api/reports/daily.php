@@ -17,12 +17,13 @@ $semester_id = $sem ? (int)$sem['semester_id'] : 0;
 // Detect columns
 $ar_cols = [];
 try { $ar_cols = $conn->query("SHOW COLUMNS FROM attendance_records")->fetchAll(PDO::FETCH_COLUMN); } catch(Exception $e){}
-$hasNote = in_array('note', $ar_cols);
+$noteCol = in_array('remark', $ar_cols) ? 'remark' : (in_array('note', $ar_cols) ? 'note' : '');
+$hasNote = $noteCol !== '';
 $hasTime = in_array('check_in_time', $ar_cols);
 
 $extra = '';
 if($hasTime) $extra .= ', ar.check_in_time';
-if($hasNote) $extra .= ', ar.note';
+if($hasNote) $extra .= ", ar.$noteCol AS note";
 
 $sql = "SELECT ar.status $extra,
                s.student_id, s.first_name_th, s.last_name_th, s.student_number,
@@ -42,7 +43,10 @@ try {
     $stmt = $conn->prepare($sql);
     $stmt->execute($params);
     $rows = $stmt->fetchAll();
-    foreach($rows as $r) { if(isset($counts[$r['status']])) $counts[$r['status']]++; }
+    foreach($rows as $r) { 
+        $st = $r['status'] === 'มาสาย' ? 'สาย' : $r['status'];
+        if(isset($counts[$st])) $counts[$st]++; 
+    }
 } catch(Exception $e) {}
 
 jsonResponse([

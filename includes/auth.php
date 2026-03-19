@@ -7,7 +7,7 @@ function isLoggedIn() {
 
 function requireLogin() {
     if(!isLoggedIn()) {
-        header('Location: /attendance_system_php/pages/login.php');
+        header('Location: /attendance_system/pages/login.php');
         exit;
     }
 }

@@ -19,9 +19,9 @@ $present = $absent = $late = $leave = 0;
 if($semester_id) {
     $st = $conn->prepare(
         "SELECT
-            SUM(CASE WHEN ar.status IN ('มาเรียน','สาย') THEN 1 ELSE 0 END) AS present,
+            SUM(CASE WHEN ar.status IN ('มาเรียน','สาย','มาสาย') THEN 1 ELSE 0 END) AS present,
             SUM(CASE WHEN ar.status = 'ขาดเรียน'          THEN 1 ELSE 0 END) AS absent,
-            SUM(CASE WHEN ar.status = 'สาย'               THEN 1 ELSE 0 END) AS late,
+            SUM(CASE WHEN ar.status IN ('สาย','มาสาย')     THEN 1 ELSE 0 END) AS late,
             SUM(CASE WHEN ar.status = 'ลา'                THEN 1 ELSE 0 END) AS leave_count
          FROM attendance_records ar
          WHERE ar.check_in_date = ? AND ar.semester_id = ?"
@@ -43,7 +43,7 @@ if($semester_id) {
         "SELECT
             ar.check_in_date AS date,
             COUNT(*) AS total,
-            SUM(CASE WHEN ar.status IN ('มาเรียน','สาย') THEN 1 ELSE 0 END) AS present,
+            SUM(CASE WHEN ar.status IN ('มาเรียน','สาย','มาสาย') THEN 1 ELSE 0 END) AS present,
             SUM(CASE WHEN ar.status = 'ขาดเรียน'          THEN 1 ELSE 0 END) AS absent
          FROM attendance_records ar
          WHERE ar.semester_id = ?

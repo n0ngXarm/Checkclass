@@ -23,7 +23,7 @@ SET @@SESSION.SQL_LOG_BIN= 0;
 
 SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ '5148af68-1fa6-11f1-8306-7a0c062bd281:1-15,
 afcf2b90-1e20-11f1-b25e-526fda60f779:1-85,
-efc7fdf6-1fa6-11f1-84a6-6ed21bd63578:1-296';
+efc7fdf6-1fa6-11f1-84a6-6ed21bd63578:1-297';
 
 --
 -- Table structure for table `attendance_records`
@@ -55,7 +55,7 @@ CREATE TABLE `attendance_records` (
   CONSTRAINT `attendance_records_ibfk_2` FOREIGN KEY (`teacher_id`) REFERENCES `teachers` (`teacher_id`),
   CONSTRAINT `attendance_records_ibfk_3` FOREIGN KEY (`semester_id`) REFERENCES `semesters` (`semester_id`),
   CONSTRAINT `attendance_records_ibfk_4` FOREIGN KEY (`class_id`) REFERENCES `classes` (`class_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -64,6 +64,7 @@ CREATE TABLE `attendance_records` (
 
 LOCK TABLES `attendance_records` WRITE;
 /*!40000 ALTER TABLE `attendance_records` DISABLE KEYS */;
+INSERT INTO `attendance_records` VALUES (1,23,1,1,1,'2026-03-18',NULL,'มาเรียน',NULL,'2026-03-18 19:02:21'),(2,24,1,1,1,'2026-03-18',NULL,'มาเรียน',NULL,'2026-03-18 19:02:21'),(3,25,1,1,1,'2026-03-18',NULL,'มาเรียน',NULL,'2026-03-18 19:02:21'),(4,26,1,1,1,'2026-03-18',NULL,'มาเรียน',NULL,'2026-03-18 19:02:22'),(5,27,1,1,1,'2026-03-18',NULL,'มาเรียน',NULL,'2026-03-18 19:02:22'),(6,28,1,1,1,'2026-03-18',NULL,'ขาดเรียน',NULL,'2026-03-18 19:02:22'),(7,29,1,1,1,'2026-03-18',NULL,'มาเรียน',NULL,'2026-03-18 19:02:22'),(8,30,1,1,1,'2026-03-18',NULL,'มาเรียน',NULL,'2026-03-18 19:02:23'),(9,31,1,1,1,'2026-03-18',NULL,'มาเรียน',NULL,'2026-03-18 19:02:23'),(10,32,1,1,1,'2026-03-18',NULL,'มาเรียน',NULL,'2026-03-18 19:02:23'),(11,33,1,1,1,'2026-03-18',NULL,'มาเรียน',NULL,'2026-03-18 19:02:23'),(12,34,1,1,1,'2026-03-18',NULL,'มาเรียน',NULL,'2026-03-18 19:02:23'),(13,35,1,1,1,'2026-03-18',NULL,'มาเรียน',NULL,'2026-03-18 19:02:24'),(14,36,1,1,1,'2026-03-18',NULL,'มาเรียน',NULL,'2026-03-18 19:02:24'),(15,37,1,1,1,'2026-03-18',NULL,'มาเรียน',NULL,'2026-03-18 19:02:24'),(16,38,1,1,1,'2026-03-18',NULL,'มาเรียน',NULL,'2026-03-18 19:02:24'),(17,39,1,1,1,'2026-03-18',NULL,'มาเรียน',NULL,'2026-03-18 19:02:25'),(18,40,1,1,1,'2026-03-18',NULL,'มาเรียน',NULL,'2026-03-18 19:02:25'),(19,41,1,1,1,'2026-03-18',NULL,'มาเรียน',NULL,'2026-03-18 19:02:25'),(20,42,1,1,1,'2026-03-18',NULL,'มาเรียน',NULL,'2026-03-18 19:02:26'),(21,43,1,1,1,'2026-03-18',NULL,'มาเรียน',NULL,'2026-03-18 19:02:26'),(22,44,1,1,1,'2026-03-18',NULL,'ขาดเรียน',NULL,'2026-03-18 19:02:26');
 /*!40000 ALTER TABLE `attendance_records` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -424,4 +425,4 @@ SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-03-19  1:52:18
+-- Dump completed on 2026-03-19 17:19:56

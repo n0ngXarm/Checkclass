@@ -1,8 +1,8 @@
 'use client';
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import Navbar from '@/components/Navbar';
-import { api } from '@/lib/api';
+import Navbar from '../../../components/Navbar';
+import { api } from '../../../lib/api';
 
 const BADGE = {
   'มาเรียน': 'badge-present', 'สาย': 'badge-late',

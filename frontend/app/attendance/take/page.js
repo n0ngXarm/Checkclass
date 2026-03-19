@@ -1,8 +1,8 @@
 'use client';
 import { useEffect, useState, useCallback, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import Navbar from '@/components/Navbar';
-import { api } from '@/lib/api';
+import Navbar from '../../../components/Navbar';
+import { api } from '../../../lib/api';
 import { Save, CheckCircle2, ArrowLeft } from 'lucide-react';
 
 const STATUS_OPTIONS = ['มาเรียน', 'สาย', 'ลา', 'ขาดเรียน'];
@@ -129,7 +129,7 @@ function TakeContent() {
                 return (
                   <tr key={stu.student_id} className={`transition-colors ${rowColor}`}>
                     <td className="px-4 py-2.5 text-slate-400">{i+1}</td>
-                    <td className="px-4 py-2.5 text-slate-500 font-mono text-xs">{stu.student_id}</td>
+                    <td className="px-4 py-2.5 text-slate-500 font-mono text-xs">{stu.student_code || stu.student_id}</td>
                     <td className="px-4 py-2.5 font-medium">
                       {stu.first_name_th} {stu.last_name_th}
                       {stu.nickname && <span className="text-slate-400 font-normal text-xs ml-1">({stu.nickname})</span>}

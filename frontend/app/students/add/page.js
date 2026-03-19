@@ -1,8 +1,8 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Navbar from '@/components/Navbar';
-import { api } from '@/lib/api';
+import Navbar from '../../../components/Navbar';
+import { api } from '../../../lib/api';
 import { UserPlus } from 'lucide-react';
 
 export default function AddStudentPage() {

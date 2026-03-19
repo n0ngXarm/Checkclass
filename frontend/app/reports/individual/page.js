@@ -1,8 +1,8 @@
 'use client';
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import Navbar from '@/components/Navbar';
-import { api } from '@/lib/api';
+import Navbar from '../../../components/Navbar';
+import { api } from '../../../lib/api';
 import { User, TrendingUp } from 'lucide-react';
 
 const BADGE = {

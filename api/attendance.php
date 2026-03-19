@@ -14,7 +14,9 @@ $ar_cols = [];
 try {
     $ar_cols = $conn->query("SHOW COLUMNS FROM attendance_records")->fetchAll(PDO::FETCH_COLUMN);
 } catch(Exception $e){}
-$hasNote = in_array('note', $ar_cols);
+
+$noteCol = in_array('remark', $ar_cols) ? 'remark' : (in_array('note', $ar_cols) ? 'note' : '');
+$hasNote = $noteCol !== '';
 $hasTime = in_array('check_in_time', $ar_cols);
 
 // Current semester
@@ -30,7 +32,7 @@ if($method === 'GET') {
 
     $select = "SELECT ar.student_id, ar.status";
     if($hasTime) $select .= ", ar.check_in_time";
-    if($hasNote) $select .= ", ar.note";
+    if($hasNote) $select .= ", ar.$noteCol AS note";
 
     $stmt = $conn->prepare(
         "$select FROM attendance_records ar
@@ -44,7 +46,7 @@ if($method === 'GET') {
 
     // Get students in class
     $stu_stmt = $conn->prepare(
-        "SELECT student_id, first_name_th, last_name_th, student_number, nickname, gender
+        "SELECT student_id, student_code, first_name_th, last_name_th, student_number, gender
          FROM students WHERE class_id = ? ORDER BY student_number ASC"
     );
     $stu_stmt->execute([$class_id]);
@@ -73,7 +75,7 @@ if($method === 'POST') {
         foreach($entries as $entry) {
             $student_id = $entry['student_id'] ?? '';
             $status     = $entry['status']     ?? 'มาเรียน';
-            $allowed    = ['มาเรียน','ขาดเรียน','สาย','ลา'];
+            $allowed    = ['มาเรียน','ขาดเรียน','สาย','ลา','มาสาย'];
             if(!$student_id || !in_array($status, $allowed)) continue;
 
             if($hasNote && $hasTime) {
@@ -81,10 +83,10 @@ if($method === 'POST') {
                 $note = !empty($entry['note']) ? trim($entry['note']) : null;
                 $stmt = $conn->prepare(
                     "INSERT INTO attendance_records
-                        (student_id, class_id, teacher_id, semester_id, check_in_date, status, check_in_time, note)
+                        (student_id, class_id, teacher_id, semester_id, check_in_date, status, check_in_time, $noteCol)
                      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                      ON DUPLICATE KEY UPDATE
-                        status=VALUES(status), check_in_time=VALUES(check_in_time), note=VALUES(note)"
+                        status=VALUES(status), check_in_time=VALUES(check_in_time), $noteCol=VALUES($noteCol)"
                 );
                 $stmt->execute([$student_id, $class_id, $teacher['id'], $semester_id, $check_date, $status, $time, $note]);
             } else {

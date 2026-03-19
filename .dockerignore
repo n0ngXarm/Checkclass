@@ -1,0 +1,6 @@
+frontend/
+.git/
+.vscode/
+node_modules/
+attendance_system.sql
+push_to_github.bat
