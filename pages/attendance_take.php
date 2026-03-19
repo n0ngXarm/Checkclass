@@ -185,16 +185,16 @@ $statusLabels = [
                         <?php endif; ?>
                     </td>
                     <td>
-                        <div class="btn-group btn-group-sm" role="group">
+                        <div class="d-flex flex-wrap gap-1" role="group">
                         <?php foreach($statusLabels as $label => $meta): ?>
                             <input type="radio" class="btn-check" name="status[<?= $stu['student_id'] ?>]"
                                    id="s_<?= $stu['student_id'] ?>_<?= $label ?>"
                                    value="<?= $label ?>"
                                    <?= $cur_status === $label ? 'checked' : '' ?>
                                    onchange="updateRow('<?= $stu['student_id'] ?>','<?= $label ?>')">
-                            <label class="btn btn-outline-<?= $meta['color'] ?> py-1 px-2"
+                            <label class="btn btn-outline-<?= $meta['color'] ?> pill-btn"
                                    for="s_<?= $stu['student_id'] ?>_<?= $label ?>"
-                                   style="font-size:0.78rem;">
+                                   style="font-size:0.85rem;">
                                 <?= $label ?>
                             </label>
                         <?php endforeach; ?>

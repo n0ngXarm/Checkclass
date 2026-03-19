@@ -7,11 +7,13 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="/attendance_system/assets/css/style.css" rel="stylesheet">
 </head>
 <body>
     <?php if(isset($_SESSION['teacher_id'])): ?>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-glass sticky-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="dashboard.php">
                 <i class="bi bi-calendar-check"></i> ระบบเช็คชื่อ IT
