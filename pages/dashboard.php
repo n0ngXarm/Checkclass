@@ -95,70 +95,82 @@ $attendance_rate = ($stats['total_students'] > 0 && ($stats['present_today'] + $
 </div>
 
 <!-- ===== Stat Cards ===== -->
-<div class="row g-3 mb-4">
-    <div class="col-6 col-md-3">
+<div class="row row-cols-2 row-cols-md-5 g-3 mb-4">
+    <div class="col">
         <div class="card stats-card h-100" style="border-left:4px solid #0d6efd;">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <p class="text-muted small mb-1">นักเรียนทั้งหมด</p>
+                        <p class="text-muted small mb-1">ทั้งหมด</p>
                         <h2 class="mb-0 fw-bold"><?= $stats['total_students'] ?></h2>
-                        <small class="text-muted">คน</small>
                     </div>
                     <div class="rounded-circle d-flex align-items-center justify-content-center bg-primary bg-opacity-10"
-                         style="width:56px;height:56px;">
-                        <i class="bi bi-people-fill text-primary fs-3"></i>
+                         style="width:48px;height:48px;">
+                        <i class="bi bi-people-fill text-primary fs-4"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-6 col-md-3">
+    <div class="col">
         <div class="card stats-card h-100" style="border-left:4px solid #198754;">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <p class="text-muted small mb-1">มาเรียนวันนี้</p>
+                        <p class="text-muted small mb-1">มาเรียน (รวมสาย)</p>
                         <h2 class="mb-0 fw-bold text-success"><?= $stats['present_today'] ?></h2>
-                        <small class="text-muted">คน</small>
                     </div>
                     <div class="rounded-circle d-flex align-items-center justify-content-center bg-success bg-opacity-10"
-                         style="width:56px;height:56px;">
-                        <i class="bi bi-check-circle-fill text-success fs-3"></i>
+                         style="width:48px;height:48px;">
+                        <i class="bi bi-check-circle-fill text-success fs-4"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-6 col-md-3">
+    <div class="col">
         <div class="card stats-card h-100" style="border-left:4px solid #ffc107;">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <p class="text-muted small mb-1">มาสายวันนี้</p>
+                        <p class="text-muted small mb-1">มาสาย</p>
                         <h2 class="mb-0 fw-bold text-warning"><?= $stats['late_today'] ?></h2>
-                        <small class="text-muted">คน</small>
                     </div>
                     <div class="rounded-circle d-flex align-items-center justify-content-center bg-warning bg-opacity-10"
-                         style="width:56px;height:56px;">
-                        <i class="bi bi-clock-fill text-warning fs-3"></i>
+                         style="width:48px;height:48px;">
+                        <i class="bi bi-clock-fill text-warning fs-4"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-6 col-md-3">
+    <div class="col">
+        <div class="card stats-card h-100" style="border-left:4px solid #0dcaf0;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="text-muted small mb-1">ลา</p>
+                        <h2 class="mb-0 fw-bold text-info"><?= $stats['leave_today'] ?></h2>
+                    </div>
+                    <div class="rounded-circle d-flex align-items-center justify-content-center bg-info bg-opacity-10"
+                         style="width:48px;height:48px;">
+                        <i class="bi bi-file-text-fill text-info fs-4"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
         <div class="card stats-card h-100" style="border-left:4px solid #dc3545;">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <p class="text-muted small mb-1">ขาดเรียนวันนี้</p>
+                        <p class="text-muted small mb-1">ขาดเรียน</p>
                         <h2 class="mb-0 fw-bold text-danger"><?= $stats['absent_today'] ?></h2>
-                        <small class="text-muted">คน</small>
                     </div>
                     <div class="rounded-circle d-flex align-items-center justify-content-center bg-danger bg-opacity-10"
-                         style="width:56px;height:56px;">
-                        <i class="bi bi-x-circle-fill text-danger fs-3"></i>
+                         style="width:48px;height:48px;">
+                        <i class="bi bi-x-circle-fill text-danger fs-4"></i>
                     </div>
                 </div>
             </div>

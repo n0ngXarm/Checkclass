@@ -101,8 +101,8 @@ include '../includes/header.php';
 </div>
 
 <!-- Stat cards -->
-<div class="row g-3 mb-4">
-    <div class="col-6 col-md-3">
+<div class="row row-cols-2 row-cols-md-5 g-3 mb-4">
+    <div class="col">
         <div class="card stats-card bg-primary text-white text-center">
             <div class="card-body py-3">
                 <h2 class="mb-0"><?= $total ?></h2>
@@ -110,7 +110,7 @@ include '../includes/header.php';
             </div>
         </div>
     </div>
-    <div class="col-6 col-md-3">
+    <div class="col">
         <div class="card stats-card bg-success text-white text-center">
             <div class="card-body py-3">
                 <h2 class="mb-0"><?= $present ?></h2>
@@ -118,7 +118,7 @@ include '../includes/header.php';
             </div>
         </div>
     </div>
-    <div class="col-6 col-md-3">
+    <div class="col">
         <div class="card stats-card bg-warning text-dark text-center">
             <div class="card-body py-3">
                 <h2 class="mb-0"><?= $counts['สาย'] ?></h2>
@@ -126,7 +126,15 @@ include '../includes/header.php';
             </div>
         </div>
     </div>
-    <div class="col-6 col-md-3">
+    <div class="col">
+        <div class="card stats-card bg-info text-dark text-center">
+            <div class="card-body py-3">
+                <h2 class="mb-0"><?= $counts['ลา'] ?></h2>
+                <small>ลา</small>
+            </div>
+        </div>
+    </div>
+    <div class="col">
         <div class="card stats-card bg-danger text-white text-center">
             <div class="card-body py-3">
                 <h2 class="mb-0"><?= $counts['ขาดเรียน'] ?></h2>
