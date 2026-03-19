@@ -1,0 +1,18 @@
+RewriteEngine On
+
+# ป้องกันการเข้าถึงไฟล์สำคัญ
+<FilesMatch "\.(env|config|database\.php)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# URL ที่เป็นมิตร (ถ้าต้องการ)
+RewriteRule ^attendance/?$ pages/attendance.php [L]
+RewriteRule ^reports/?$ pages/reports.php [L]
+RewriteRule ^students/?$ pages/students.php [L]
+
+# ตั้งค่า PHP
+php_value upload_max_filesize 10M
+php_value post_max_size 10M
+php_value max_execution_time 300
+php_value max_input_time 300

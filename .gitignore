@@ -1,6 +1,14 @@
-/api/config.php
-/vendor/
+# PHP
+config/database.php
+ca.pem
+test_db.php
+
+# Node / Next.js
+frontend/node_modules/
+frontend/.next/
+frontend/.env.local
+
+# XAMPP / OS
+Thumbs.db
 .DS_Store
 *.log
-node_modules/
-.env

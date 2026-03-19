@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/php/(.*)",
+      "destination": "https://YOUR-PHP-BACKEND.railway.app/attendance_system/api/$1"
+    }
+  ]
+}

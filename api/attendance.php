@@ -1,133 +1,108 @@
 <?php
-require_once 'config.php';
-session_start();
+// api/attendance.php — GET (existing records) / POST (save batch)
+require_once __DIR__ . '/../api/cors.php';
+require_once __DIR__ . '/../config/database.php';
+setCorsHeaders();
+$teacher = requireAuth();
 
-if (!isset($_SESSION['user_id'])) {
-    http_response_code(401);
-    echo json_encode(['error' => 'Unauthorized']);
-    exit();
+$db   = new Database();
+$conn = $db->getConnection();
+$method = $_SERVER['REQUEST_METHOD'];
+
+// Detect optional columns
+$ar_cols = [];
+try {
+    $ar_cols = $conn->query("SHOW COLUMNS FROM attendance_records")->fetchAll(PDO::FETCH_COLUMN);
+} catch(Exception $e){}
+$hasNote = in_array('note', $ar_cols);
+$hasTime = in_array('check_in_time', $ar_cols);
+
+// Current semester
+$sem = $conn->query("SELECT * FROM semesters WHERE is_current = 1 LIMIT 1")->fetch();
+$semester_id = $sem ? (int)$sem['semester_id'] : 0;
+
+// ─── GET ─────────────────────────────────────────────────────────
+if($method === 'GET') {
+    $class_id   = (int)($_GET['class_id'] ?? 0);
+    $check_date = $_GET['date'] ?? date('Y-m-d');
+
+    if(!$class_id) jsonError('class_id จำเป็นต้องมี');
+
+    $select = "SELECT ar.student_id, ar.status";
+    if($hasTime) $select .= ", ar.check_in_time";
+    if($hasNote) $select .= ", ar.note";
+
+    $stmt = $conn->prepare(
+        "$select FROM attendance_records ar
+         WHERE ar.class_id = ? AND ar.check_in_date = ? AND ar.semester_id = ?"
+    );
+    $stmt->execute([$class_id, $check_date, $semester_id]);
+    $records = [];
+    foreach($stmt->fetchAll() as $r) {
+        $records[$r['student_id']] = $r;
+    }
+
+    // Get students in class
+    $stu_stmt = $conn->prepare(
+        "SELECT student_id, first_name_th, last_name_th, student_number, nickname, gender
+         FROM students WHERE class_id = ? ORDER BY student_number ASC"
+    );
+    $stu_stmt->execute([$class_id]);
+    $students = $stu_stmt->fetchAll();
+
+    jsonResponse([
+        'success'     => true,
+        'students'    => $students,
+        'records'     => $records,
+        'check_date'  => $check_date,
+        'semester_id' => $semester_id,
+    ]);
 }
 
-$user_id = $_SESSION['user_id'];
-$role = $_SESSION['role'];
+// ─── POST (batch save) ───────────────────────────────────────────
+if($method === 'POST') {
+    $b          = getBody();
+    $class_id   = (int)($b['class_id']   ?? 0);
+    $check_date = $b['date'] ?? date('Y-m-d');
+    $entries    = $b['entries'] ?? []; // [{student_id, status, time, note}]
 
-// GET: ดึงข้อมูลการเช็คชื่อ
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $date = $_GET['date'] ?? date('Y-m-d');
-    $class = $_GET['class'] ?? '';
-
-    try {
-        $sql = "
-            SELECT 
-                a.attendance_id,
-                s.student_id,
-                a.status,
-                a.note,
-                a.check_time,
-                s.student_code,
-                s.title,
-                s.first_name,
-                s.last_name,
-                s.class
-            FROM attendance a
-            RIGHT JOIN students s ON a.student_id = s.student_id AND a.check_date = ?
-            WHERE 1=1
-        ";
-        
-        $params = [$date];
-        
-        if (!empty($class)) {
-            $sql .= " AND s.class = ?";
-            $params[] = $class;
-        }
-        
-        $sql .= " ORDER BY s.student_code";
-        
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($params);
-        $attendance = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        echo json_encode($attendance);
-
-    } catch (PDOException $e) {
-        http_response_code(500);
-        echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
-    }
-    exit();
-}
-
-// POST: บันทึกการเช็คชื่อ
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if ($role !== 'teacher' && $role !== 'admin') {
-        http_response_code(403);
-        echo json_encode(['error' => 'Forbidden']);
-        exit();
-    }
-
-    $input = json_decode(file_get_contents('php://input'), true);
-
-    if (!isset($input['attendance']) || !is_array($input['attendance'])) {
-        http_response_code(400);
-        echo json_encode(['error' => 'Invalid data']);
-        exit();
-    }
-
-    $date = $input['date'] ?? date('Y-m-d');
-    $time = date('H:i:s');
-
-    // หา teacher_id จาก user_id
-    $stmt = $conn->prepare("SELECT teacher_id FROM teachers WHERE user_id = ?");
-    $stmt->execute([$user_id]);
-    $teacher_id = $stmt->fetchColumn();
-
-    if (!$teacher_id) {
-        http_response_code(403);
-        echo json_encode(['error' => 'Teacher not found']);
-        exit();
-    }
+    if(!$class_id || empty($entries)) jsonError('ข้อมูลไม่ครบ: class_id, entries');
 
     $conn->beginTransaction();
-
     try {
-        foreach ($input['attendance'] as $item) {
-            $student_id = $item['student_id'];
-            $status = $item['status'];
-            $note = $item['note'] ?? '';
+        foreach($entries as $entry) {
+            $student_id = $entry['student_id'] ?? '';
+            $status     = $entry['status']     ?? 'มาเรียน';
+            $allowed    = ['มาเรียน','ขาดเรียน','สาย','ลา'];
+            if(!$student_id || !in_array($status, $allowed)) continue;
 
-            // ตรวจสอบว่ามีข้อมูลเดิมหรือไม่
-            $check = $conn->prepare("SELECT attendance_id FROM attendance WHERE student_id = ? AND check_date = ?");
-            $check->execute([$student_id, $date]);
-            $existing = $check->fetch();
-
-            if ($existing) {
-                // อัปเดต
-                $stmt = $conn->prepare("
-                    UPDATE attendance 
-                    SET status = ?, note = ?, teacher_id = ?, check_time = ?
-                    WHERE attendance_id = ?
-                ");
-                $stmt->execute([$status, $note, $teacher_id, $time, $existing['attendance_id']]);
+            if($hasNote && $hasTime) {
+                $time = !empty($entry['time']) ? $entry['time'] : null;
+                $note = !empty($entry['note']) ? trim($entry['note']) : null;
+                $stmt = $conn->prepare(
+                    "INSERT INTO attendance_records
+                        (student_id, class_id, teacher_id, semester_id, check_in_date, status, check_in_time, note)
+                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                     ON DUPLICATE KEY UPDATE
+                        status=VALUES(status), check_in_time=VALUES(check_in_time), note=VALUES(note)"
+                );
+                $stmt->execute([$student_id, $class_id, $teacher['id'], $semester_id, $check_date, $status, $time, $note]);
             } else {
-                // เพิ่มใหม่
-                $stmt = $conn->prepare("
-                    INSERT INTO attendance (student_id, teacher_id, check_date, check_time, status, note)
-                    VALUES (?, ?, ?, ?, ?, ?)
-                ");
-                $stmt->execute([$student_id, $teacher_id, $date, $time, $status, $note]);
+                $stmt = $conn->prepare(
+                    "INSERT INTO attendance_records
+                        (student_id, class_id, teacher_id, semester_id, check_in_date, status)
+                     VALUES (?, ?, ?, ?, ?, ?)
+                     ON DUPLICATE KEY UPDATE status=VALUES(status)"
+                );
+                $stmt->execute([$student_id, $class_id, $teacher['id'], $semester_id, $check_date, $status]);
             }
         }
-
         $conn->commit();
-        echo json_encode(['success' => true]);
-
-    } catch (PDOException $e) {
+        jsonResponse(['success' => true, 'saved' => count($entries)]);
+    } catch(Exception $e) {
         $conn->rollBack();
-        http_response_code(500);
-        echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
+        jsonError('บันทึกล้มเหลว: ' . $e->getMessage(), 500);
     }
-    exit();
 }
 
-http_response_code(405);
-echo json_encode(['error' => 'Method not allowed']);
-?>
+jsonError('Method not allowed', 405);
