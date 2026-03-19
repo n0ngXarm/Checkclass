@@ -61,6 +61,8 @@ try {
                 ar.check_in_date,
                 COUNT(*) AS total,
                 SUM(CASE WHEN ar.status = 'มาเรียน'           THEN 1 ELSE 0 END) AS present,
+                SUM(CASE WHEN ar.status = 'สาย'               THEN 1 ELSE 0 END) AS late,
+                SUM(CASE WHEN ar.status = 'ลา'                THEN 1 ELSE 0 END) AS leave_day,
                 SUM(CASE WHEN ar.status = 'ขาดเรียน'          THEN 1 ELSE 0 END) AS absent
              FROM attendance_records ar
              WHERE ar.semester_id = :sem
@@ -244,6 +246,8 @@ $attendance_rate = ($stats['total_students'] > 0 && ($stats['present_today'] + $
 const ctx = document.getElementById('attendanceChart').getContext('2d');
 const labels  = [<?php foreach(array_reverse($trends) as $t) echo "'" . date('d/m', strtotime($t['check_in_date'])) . "',"; ?>];
 const present = [<?php foreach(array_reverse($trends) as $t) echo (int)$t['present'] . ","; ?>];
+const late    = [<?php foreach(array_reverse($trends) as $t) echo (int)$t['late'] . ","; ?>];
+const leave_day = [<?php foreach(array_reverse($trends) as $t) echo (int)$t['leave_day'] . ","; ?>];
 const absent  = [<?php foreach(array_reverse($trends) as $t) echo (int)$t['absent']  . ","; ?>];
 
 new Chart(ctx, {
@@ -252,6 +256,8 @@ new Chart(ctx, {
         labels,
         datasets: [
             { label: 'มาเรียน', data: present, borderColor:'#198754', backgroundColor:'rgba(25,135,84,0.1)', tension:0.4, fill:true },
+            { label: 'สาย',    data: late,    borderColor:'#ffc107', backgroundColor:'rgba(255,193,7,0.1)', tension:0.4, fill:true },
+            { label: 'ลา',     data: leave_day, borderColor:'#0dcaf0', backgroundColor:'rgba(13,202,240,0.1)', tension:0.4, fill:true },
             { label: 'ขาดเรียน', data: absent,  borderColor:'#dc3545', backgroundColor:'rgba(220,53,69,0.1)',  tension:0.4, fill:true }
         ]
     },
