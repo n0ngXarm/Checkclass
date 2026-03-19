@@ -29,7 +29,7 @@ try {
     if($semester_id > 0) {
         $st = $conn->prepare(
             "SELECT
-                SUM(CASE WHEN ar.status IN ('มาเรียน','สาย') THEN 1 ELSE 0 END) AS present_today,
+                SUM(CASE WHEN ar.status = 'มาเรียน'           THEN 1 ELSE 0 END) AS present_today,
                 SUM(CASE WHEN ar.status = 'ขาดเรียน'          THEN 1 ELSE 0 END) AS absent_today,
                 SUM(CASE WHEN ar.status = 'สาย'               THEN 1 ELSE 0 END) AS late_today,
                 SUM(CASE WHEN ar.status = 'ลา'                THEN 1 ELSE 0 END) AS leave_today
@@ -60,7 +60,7 @@ try {
             "SELECT
                 ar.check_in_date,
                 COUNT(*) AS total,
-                SUM(CASE WHEN ar.status IN ('มาเรียน','สาย') THEN 1 ELSE 0 END) AS present,
+                SUM(CASE WHEN ar.status = 'มาเรียน'           THEN 1 ELSE 0 END) AS present,
                 SUM(CASE WHEN ar.status = 'ขาดเรียน'          THEN 1 ELSE 0 END) AS absent
              FROM attendance_records ar
              WHERE ar.semester_id = :sem
@@ -117,7 +117,7 @@ $attendance_rate = ($stats['total_students'] > 0 && ($stats['present_today'] + $
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <p class="text-muted small mb-1">มาเรียน (รวมสาย)</p>
+                        <p class="text-muted small mb-1">มาเรียน</p>
                         <h2 class="mb-0 fw-bold text-success"><?= $stats['present_today'] ?></h2>
                     </div>
                     <div class="rounded-circle d-flex align-items-center justify-content-center bg-success bg-opacity-10"

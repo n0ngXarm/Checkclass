@@ -58,7 +58,7 @@ foreach($rows as $r) {
     if(isset($counts[$key])) $counts[$key]++;
 }
 $total   = count($rows);
-$present = $counts['มาเรียน'] + $counts['สาย'];
+$present = $counts['มาเรียน'];
 
 include '../includes/header.php';
 ?>
@@ -114,7 +114,7 @@ include '../includes/header.php';
         <div class="card stats-card bg-success text-white text-center">
             <div class="card-body py-3">
                 <h2 class="mb-0"><?= $present ?></h2>
-                <small>มาเรียน (รวมสาย)</small>
+                <small>มาเรียน</small>
             </div>
         </div>
     </div>
@@ -144,7 +144,7 @@ include '../includes/header.php';
     </div>
 </div>
 
-<?php if($total > 0): $pct = round($present / $total * 100); ?>
+<?php if($total > 0): $attending = $counts['มาเรียน'] + $counts['สาย']; $pct = round($attending / $total * 100); ?>
 <div class="mb-4">
     <div class="d-flex justify-content-between mb-1">
         <small>อัตราการเข้าเรียน</small>
