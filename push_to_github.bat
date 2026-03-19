@@ -53,8 +53,8 @@ if "%COMMIT_MSG%"=="" set COMMIT_MSG=Update: %DATE% %TIME%
 echo [4/5] Committing: %COMMIT_MSG%
 git commit -m "%COMMIT_MSG%"
 
-echo [5/5] Pushing to GitHub...
-git push -u origin main 2>nul || git push -u origin master
+echo [5/5] Pushing to GitHub (branch: main)...
+git push -u origin main
 
 echo.
 echo ========================================
@@ -63,9 +63,8 @@ if %ERRORLEVEL%==0 (
     echo   https://github.com/n0ngXarm/Checkclass
 ) else (
     echo   ERROR! Push failed.
-    echo   - Check your GitHub credentials
-    echo   - Make sure you have pushed at least once before
-    echo   - Try: git push --set-upstream origin main
+    echo   Try running manually:
+    echo     git push -u origin main
 )
 echo ========================================
 pause
