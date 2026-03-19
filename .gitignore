@@ -1,7 +1,4 @@
 # PHP
-config/database.php
-ca.pem
-test_db.php
 
 # Node / Next.js
 frontend/node_modules/
