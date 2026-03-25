@@ -23,6 +23,7 @@ class Database
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES => false,
                 PDO::ATTR_TIMEOUT => 5, // 5 seconds timeout
+                PDO::ATTR_PERSISTENT => true, // Reuses DB connections to greatly speed up remote SSL connections
             ];
 
             $this->conn = new PDO($dsn, $this->username, $this->password, $options);

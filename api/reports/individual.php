@@ -43,7 +43,7 @@ try {
          WHERE ar.student_id = ? AND ar.semester_id = ?
          ORDER BY ar.check_in_date DESC"
     );
-    $stmt->execute([$student_id, $semester_id]);
+    $stmt->execute([$student['student_id'], $semester_id]);
     $hist = $stmt->fetchAll();
     foreach($hist as $h) {
         $counts['total']++;

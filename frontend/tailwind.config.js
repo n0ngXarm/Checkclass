@@ -4,20 +4,17 @@ module.exports = {
     './app/**/*.{js,jsx}',
     './components/**/*.{js,jsx}',
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       fontFamily: {
         sans: ['Inter', 'Sarabun', 'sans-serif'],
       },
       colors: {
-        primary: {
-          50:  '#eff6ff',
-          100: '#dbeafe',
-          500: '#3b82f6',
-          600: '#2563eb',
-          700: '#1d4ed8',
-          900: '#1e3a8a',
-        }
+        primary: require('tailwindcss/colors').blue,
+        gold: require('tailwindcss/colors').amber,
+        brown: require('tailwindcss/colors').orange,
+        grayTheme: require('tailwindcss/colors').slate,
       },
       animation: {
         'fade-in-up': 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',

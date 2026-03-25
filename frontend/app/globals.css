@@ -6,35 +6,71 @@
 @layer base {
   body {
     font-family: 'Inter', 'Sarabun', sans-serif;
-    @apply bg-[#f8fafc] text-slate-800 antialiased selection:bg-indigo-100 selection:text-indigo-900;
+    @apply bg-[#f4f6f8] text-slate-800 antialiased selection:bg-blue-100 selection:text-blue-900;
   }
 }
 
 @layer components {
+  /* Blue Primary Buttons */
   .btn-primary {
-    @apply bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium px-5 py-2.5 rounded-xl shadow-lg shadow-blue-500/30 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 active:scale-[0.98] outline-none;
+    @apply bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-900 text-white font-medium px-5 py-2.5 rounded-xl shadow-[0_4px_14px_0_rgba(37,99,235,0.39)] transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 active:scale-[0.98] outline-none;
   }
+  /* Gray Secondary Buttons */
   .btn-secondary {
-    @apply bg-white hover:bg-slate-50 text-slate-700 font-medium px-5 py-2.5 rounded-xl border border-slate-200 shadow-sm transition-all duration-300 active:scale-[0.98] focus:outline-none outline-none;
+    @apply bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-medium px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 shadow-sm transition-all duration-300 active:scale-[0.98] focus:outline-none outline-none;
   }
+  /* Brown/Red Danger Buttons */
   .btn-danger {
-    @apply bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white font-medium px-5 py-2.5 rounded-xl shadow-lg shadow-red-500/30 transition-all duration-300 active:scale-[0.98] focus:outline-none outline-none;
+    @apply bg-gradient-to-r from-brown-500 to-brown-700 hover:from-brown-700 hover:to-brown-900 text-white font-medium px-5 py-2.5 rounded-xl shadow-[0_4px_14px_0_rgba(120,53,15,0.39)] transition-all duration-300 active:scale-[0.98] focus:outline-none outline-none;
   }
+  /* Gold Action Cards */
+  .btn-gold {
+    @apply bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-500 hover:to-gold-600 text-white font-medium px-5 py-2.5 rounded-xl shadow-[0_4px_14px_0_rgba(251,191,36,0.39)] transition-all duration-300 active:scale-[0.98] focus:outline-none outline-none;
+  }
+  
   .card {
-    @apply bg-white/80 backdrop-blur-md rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100/60 p-6 transition-all duration-500 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)];
+    @apply bg-white dark:bg-slate-800/90 backdrop-blur-md rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] border border-slate-100/60 dark:border-slate-700 p-6 transition-all duration-500 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)];
   }
   .input {
-    @apply w-full rounded-xl border border-slate-200/80 bg-slate-50/50 px-4 py-2.5 text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-300 placeholder:text-slate-400 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)];
+    @apply w-full rounded-xl border border-slate-200/80 dark:border-slate-600 bg-slate-50/50 dark:bg-slate-900/50 px-4 py-2.5 text-sm focus:outline-none focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all duration-300 placeholder:text-slate-400 dark:placeholder:text-slate-500 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-700 dark:text-slate-200;
   }
   .select {
-    @apply w-full rounded-xl border border-slate-200/80 bg-slate-50/50 px-4 py-2.5 text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-300 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)];
+    @apply w-full rounded-xl border border-slate-200/80 dark:border-slate-600 bg-slate-50/50 dark:bg-slate-900/50 px-4 py-2.5 text-sm focus:outline-none focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all duration-300 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] text-slate-700 dark:text-slate-200;
   }
-  .badge-present { @apply inline-flex px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100/80 text-emerald-700 shadow-sm border border-emerald-200/50; }
-  .badge-absent  { @apply inline-flex px-3 py-1 rounded-full text-xs font-semibold bg-rose-100/80 text-rose-700 shadow-sm border border-rose-200/50; }
-  .badge-late    { @apply inline-flex px-3 py-1 rounded-full text-xs font-semibold bg-amber-100/80 text-amber-700 shadow-sm border border-amber-200/50; }
-  .badge-leave   { @apply inline-flex px-3 py-1 rounded-full text-xs font-semibold bg-sky-100/80 text-sky-700 shadow-sm border border-sky-200/50; }
+  
+  /* Status Badges */
+  .badge-present { @apply inline-flex px-3 py-1 rounded-full text-xs font-semibold bg-blue-100/80 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 shadow-sm border border-blue-200/50 dark:border-blue-800/50; }
+  .badge-absent  { @apply inline-flex px-3 py-1 rounded-full text-xs font-semibold bg-rose-100/80 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300 shadow-sm border border-rose-200/50 dark:border-rose-800/50; }
+  .badge-late    { @apply inline-flex px-3 py-1 rounded-full text-xs font-semibold bg-amber-100/80 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 shadow-sm border border-amber-200/50 dark:border-amber-800/50; }
+  .badge-leave   { @apply inline-flex px-3 py-1 rounded-full text-xs font-semibold bg-slate-100/80 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 shadow-sm border border-slate-200/50 dark:border-slate-700; }
 
   .glass-header {
-    @apply bg-white/70 backdrop-blur-lg border-b border-slate-200/50 supports-[backdrop-filter]:bg-white/60;
+    @apply bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg border-b border-slate-200/50 dark:border-slate-800 supports-[backdrop-filter]:bg-white/70 dark:supports-[backdrop-filter]:bg-slate-900/70 shadow-sm;
   }
+}
+
+/* React DatePicker Overrides */
+.react-datepicker-popper {
+  @apply z-[100] !important;
+}
+.react-datepicker {
+  @apply font-sans border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl bg-white dark:bg-slate-800 !important;
+}
+.react-datepicker__header {
+  @apply bg-slate-50 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700 rounded-t-2xl pt-4 !important;
+}
+.react-datepicker__current-month, .react-datepicker-time__header {
+  @apply text-slate-800 dark:text-slate-100 font-bold mb-2 !important;
+}
+.react-datepicker__day-name {
+  @apply text-slate-500 dark:text-slate-400 font-bold !important;
+}
+.react-datepicker__day {
+  @apply text-slate-700 dark:text-slate-300 hover:bg-primary-50 dark:hover:bg-primary-900/40 rounded-lg transition-colors !important;
+}
+.react-datepicker__day--selected, .react-datepicker__day--keyboard-selected {
+  @apply bg-primary-600 text-white hover:bg-primary-700 dark:bg-primary-600 dark:hover:bg-primary-500 !important;
+}
+.react-datepicker__triangle {
+  @apply hidden !important;
 }
