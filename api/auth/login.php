@@ -4,7 +4,7 @@ require_once __DIR__ . '/../../api/cors.php';
 require_once __DIR__ . '/../../config/database.php';
 
 setCorsHeaders();
-if(session_status() === PHP_SESSION_NONE) session_start();
+initSession();
 
 if($_SERVER['REQUEST_METHOD'] !== 'POST') jsonError('Method not allowed', 405);
 

@@ -38,10 +38,24 @@ function jsonError(string $message, int $code = 400): void
     jsonResponse(['success' => false, 'error' => $message], $code);
 }
 
+function initSession(): void
+{
+    if (session_status() === PHP_SESSION_NONE) {
+        session_set_cookie_params([
+            'lifetime' => 86400,
+            'path' => '/',
+            'domain' => '',
+            'secure' => true,
+            'httponly' => true,
+            'samesite' => 'None'
+        ]);
+        session_start();
+    }
+}
+
 function requireAuth(): array
 {
-    if (session_status() === PHP_SESSION_NONE)
-        session_start();
+    initSession();
     if (empty($_SESSION['teacher_id'])) {
         jsonError('Unauthorized', 401);
     }
