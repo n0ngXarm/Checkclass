@@ -99,8 +99,8 @@ export default function DashboardPage() {
               {data?.semester?.semester_name_th || 'ยังไม่ได้ตั้งค่าภาคเรียน'} • {new Date().toLocaleDateString('th-TH', { dateStyle: 'long' })}
             </p>
           </div>
-          <Link href="/attendance" className="btn-primary group !px-6 !py-3">
-            เช็คชื่อวันนี้ <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1.5" />
+          <Link href="/attendance" className="group rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white shadow-[0_8px_20px_-6px_rgba(16,185,129,0.5)] hover:shadow-[0_8px_25px_-4px_rgba(16,185,129,0.6)] hover:-translate-y-0.5 min-w-[200px] px-10 py-3.5 text-lg">
+            เช็คชื่อวันนี้ <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-2" />
           </Link>
         </div>
 
